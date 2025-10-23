@@ -83,7 +83,7 @@ This is opt-in to avoid surprising side-effects during package attach.
 
 ## Example Images
 
-Below are three examples from the vignette, displayed from `inst/doc/`. They will render after you copy the files into `inst/doc/` (see below) or after the package is installed.
+Below are three examples from the vignette:
 
 ![Mother's Day example (mommy_plot)](inst/doc/mommy_plot.png)
 
@@ -93,22 +93,12 @@ Below are three examples from the vignette, displayed from `inst/doc/`. They wil
 
 ## Assets
 
-The repository includes the xkcd TrueType font and example images. These files are stored in `inst/doc/` for distribution with the built package:
+The repository includes the xkcd TrueType font and example images in `inst/doc/` for distribution with the built package:
 
 - `inst/doc/xkcd.ttf` — xkcd TrueType font
 - `inst/doc/mommy_plot.png` — Mother's Day jittered-text example
 - `inst/doc/caritas_plot.png` — Volunteers / Caritas line chart example
 - `inst/doc/font_check.png` — Font availability verification
-
-If these files are not yet in `inst/doc/`, copy them from `vignettes/`:
-
-```sh
-mkdir -p inst/doc
-cp vignettes/xkcd.ttf inst/doc/xkcd.ttf
-cp vignettes/vignettes/mommy_plot.png inst/doc/mommy_plot.png
-cp vignettes/vignettes/caritas_plot.png inst/doc/caritas_plot.png
-cp vignettes/vignettes/font_check.png inst/doc/font_check.png
-```
 
 ## Development
 
