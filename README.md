@@ -85,11 +85,11 @@ This is opt-in to avoid surprising side-effects during package attach.
 
 Below are three examples from the vignette:
 
-![Mother's Day example (mommy_plot)](inst/doc/mommy_plot.png)
+![Mother's Day example (mommy_plot)](https://raw.githubusercontent.com/ToledoEM/xkcd/main/inst/doc/mommy_plot.png)
 
-![Caritas volunteers example (caritas_plot)](inst/doc/caritas_plot.png)
+![Caritas volunteers example (caritas_plot)](https://raw.githubusercontent.com/ToledoEM/xkcd/main/inst/doc/caritas_plot.png)
 
-![Font availability check (font_check)](inst/doc/font_check.png)
+![Font availability check (font_check)](https://raw.githubusercontent.com/ToledoEM/xkcd/main/inst/doc/font_check.png)
 
 ## Assets
 
