@@ -2,14 +2,11 @@
 
 An R package to create hand-drawn (xkcd-style) plots and elements for ggplot2.
 
-This repository contains the source for the `xkcd` package (development version).
-
-Originally from https://r-forge.r-project.org/projects/xkcd/ and now pulled out of CRAN
+This repository contains the source for the `xkcd` package (development version). Originally from https://r-forge.r-project.org/projects/xkcd/ which is deprecated and now maintained independently.
 
 ## Install
 
-
-Install the current development version from GitHub (dev):
+Install the current development version from GitHub:
 
 ```r
 # using remotes
@@ -18,7 +15,8 @@ remotes::install_github("ToledoEM/xkcd")
 # or using devtools
 devtools::install_github("ToledoEM/xkcd")
 ```
-## Quick example
+
+## Quick Start
 
 ```r
 library(xkcd)
@@ -31,54 +29,106 @@ ggplot(df, aes(x = x, y = y)) +
   theme_xkcd()
 ```
 
-Notes:
+## Key Notes
+
 - The package uses `Hmisc::bezier()` internally for smoothing paths.
-- The package prefers `linewidth` (ggplot2 >= 3.4.0) for line thickness; older code using `size` is supported where possible.
-- For proper xkcd fonts you may want to install and register fonts with `extrafont::font_import()` and `extrafont::loadfonts()`.
+- Uses `linewidth` (ggplot2 >= 3.4.0) for line thickness; older code using `size` is supported where possible.
+- Requires xkcd fonts to be installed; see **Fonts** section below.
 
-Font load order note:
+## Fonts
 
- - To ensure system fonts are discovered correctly, load `extrafont` and call `extrafont::loadfonts()` after loading the package and before plotting. Example:
+To use xkcd fonts in your plots, you need to install and register them with R's graphics system.
+
+### Install xkcd Fonts
+
+If xkcd fonts are not already installed on your system:
+
+```r
+library(extrafont)
+
+# Download and install the font
+download.file(
+  "https://github.com/ipython/xkcd-font/blob/master/xkcd.ttf?raw=true",
+  dest = "xkcd.ttf", mode = "wb"
+)
+font_import(pattern = "[X/x]kcd", prompt = FALSE)
+```
+
+### Load Fonts for Plotting
+
+Before plotting, register fonts with your graphics device:
 
 ```r
 library(xkcd)
 library(extrafont)
-extrafont::loadfonts(device = "win", quiet = TRUE) # or device = "pdf"/"postscript" as needed
-# then create your plot that uses xkcd fonts
+
+# Load fonts for your output device
+extrafont::loadfonts(device = "win", quiet = TRUE)  # or "pdf" or "postscript"
+
+# Then create your plot
+ggplot(...) + theme_xkcd()
 ```
 
-Loading `extrafont` and calling `loadfonts()` before the plotting session ensures fonts are registered with R's graphics device and will be available to `theme_xkcd()` and other functions that use the xkcd fonts.
+### Automatic Font Loading (opt-in)
 
-Automatic (opt-in) font loading
-
-If you prefer the package to attempt to register system fonts automatically on attach, set the option `xkcd.auto_load_fonts` to `TRUE` **before** calling `library(xkcd)`. This is opt-in to avoid surprising side-effects during package attach.
+To automatically load fonts when the package is attached (opt-in):
 
 ```r
-# Enable automatic font loading (opt-in)
+# Set before loading the package
 options(xkcd.auto_load_fonts = TRUE)
 library(xkcd)
-# The package will attempt to call extrafont::loadfonts() for common devices
+```
+
+This is opt-in to avoid surprising side-effects during package attach.
+
+## Example Images
+
+Below are three examples from the vignette, displayed from `inst/doc/`. They will render after you copy the files into `inst/doc/` (see below) or after the package is installed.
+
+![Mother's Day example (mommy_plot)](inst/doc/mommy_plot.png)
+
+![Caritas volunteers example (caritas_plot)](inst/doc/caritas_plot.png)
+
+![Font availability check (font_check)](inst/doc/font_check.png)
+
+## Assets
+
+The repository includes the xkcd TrueType font and example images. These files are stored in `inst/doc/` for distribution with the built package:
+
+- `inst/doc/xkcd.ttf` — xkcd TrueType font
+- `inst/doc/mommy_plot.png` — Mother's Day jittered-text example
+- `inst/doc/caritas_plot.png` — Volunteers / Caritas line chart example
+- `inst/doc/font_check.png` — Font availability verification
+
+If these files are not yet in `inst/doc/`, copy them from `vignettes/`:
+
+```sh
+mkdir -p inst/doc
+cp vignettes/xkcd.ttf inst/doc/xkcd.ttf
+cp vignettes/vignettes/mommy_plot.png inst/doc/mommy_plot.png
+cp vignettes/vignettes/caritas_plot.png inst/doc/caritas_plot.png
+cp vignettes/vignettes/font_check.png inst/doc/font_check.png
 ```
 
 ## Development
 
-To set up a development workflow (document, check, install), the following `devtools` / `remotes` helpers are useful:
+Set up a development workflow with:
 
 ```r
-# regenerate documentation from roxygen comments
+# Regenerate documentation from roxygen comments
 devtools::document()
 
-# run package checks (skip building PDF manual if you don't have LaTeX installed)
+# Run package checks (skip PDF manual if LaTeX not installed)
 devtools::check(args = "--no-manual")
 
-# build vignettes locally
+# Build vignettes
 devtools::build_vignettes()
 
-# install the package from the local source
+# Install from local source
 devtools::install_local()
 ```
 
-To render vignette sources directly:
+To render the vignette directly:
 
 ```r
 rmarkdown::render("vignettes/xkcd-intro.Rmd")
@@ -86,24 +136,25 @@ rmarkdown::render("vignettes/xkcd-intro.Rmd")
 
 ## Dependencies
 
-The package relies on (at least):
+The package requires:
 
-- ggplot2
-- Hmisc
-- grid
-- extrafont (for optional fonts)
+- **ggplot2** — Graphics framework
+- **Hmisc** — Bezier curve interpolation
+- **grid** — Low-level graphics primitives
+- **extrafont** (optional) — Font management
 
-These will be declared in the package `DESCRIPTION`; when developing locally you can install them with:
+Install dependencies with:
 
 ```r
-install.packages(c("ggplot2", "Hmisc", "grid"))
-remotes::install_cran("extrafont")
+install.packages(c("ggplot2", "Hmisc", "grid", "extrafont"))
 ```
 
 ## Contributing
 
-Contributions, bug reports, and pull requests are welcome. Please open an issue describing the change and include a minimal reproducible example if relevant.
+Contributions, bug reports, and pull requests are welcome. Please open an issue with a description and minimal reproducible example if relevant.
 
 ## License
 
-This repository does not include a LICENSE file. If you intend to publish or share the package, add a suitable `LICENSE` file (e.g. MIT) to the repository.
+This package is released under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+
