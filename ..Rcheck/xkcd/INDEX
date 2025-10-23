@@ -1,8 +1,0 @@
-geom_xkcdpath           GeomXkcdPath: fuzzy path/circle geom (XKCD
-                        style)
-theme_xkcd              Creates an XKCD theme
-xkcd-package            Plotting ggplot2 Graphics in an XKCD Style
-xkcdaxis                Plot the axis
-xkcdline                Draw lines or circles
-xkcdman                 Draw a stick figure
-xkcdrect                Draw fuzzy rectangles
