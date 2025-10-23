@@ -1,9 +1,13 @@
 {
     "sortOrder": [
         {
+            "columnIndex": 1,
+            "ascending": false
+        },
+        {
             "columnIndex": 2,
             "ascending": true
         }
     ],
-    "path": "~/github/xkcd"
+    "path": "~/github/xkcd/R"
 }

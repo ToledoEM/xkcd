@@ -1,0 +1,172 @@
+---
+title: "xkcd: An R Package for Plotting XKCD Graphs"
+author: "Emilio Torres-Manzanera"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using xkcd}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 4
+)
+
+# Load the package (assuming it's installed or built)
+library(ggplot2)
+library(xkcd)
+```
+
+## Abstract
+
+XKCD is a popular stick figure web comic with themes in mathematics, science, language, and romance created by Randall Munroe. 
+Folk have figured out how to make XKCD style graphs in Mathematica, in python, LaTeX and in other programming languages. 
+But so far there is no an elegant solution to make it in R. 
+The xkcd package gives a satisfactory answer to the question How can we make XKCD style graphs in R? 
+It provides a set of functions for:
+
+- Drawing fuzzy axes
+- Drawing fuzzy line segments, curves, and circles
+- Drawing a stick figure
+- Applying the XKCD style theme
+
+The user needs to install the TrueType font xkcd (free under the CC BY-NC 2.5 license) and register it using the extrafont package.
+The package is built on top of ggplot2 and the functions are designed to fit seamlessly into the grammar of graphics.
+
+
+## Installation and Font Setup
+
+Before plotting, you must have the **xkcd font** installed on your system.
+
+1.  **Download** the font (usually available from the XKCD website or https://github.com/ipython/xkcd-font).
+2.  **Install** the font on your operating system.
+3.  In R, use the `extrafont` package to register the font:
+
+
+
+```{r}
+library(extrafont)
+library(xkcd)
+# Run once after installation to import the fonts:
+# font_import() 
+# load the fonts to R graphics devices
+# loadfonts(device = "pdf") 
+# loadfonts(device = "postscript")
+# loadfonts(device = "win") # or "quartz" on macOS
+```
+
+*(The package documentation, particularly `theme_xkcd()`, contains specific warnings if the font is not found.)*
+
+## Basic Example: Fuzzy Lines and Axes
+
+The core functions are `geom_xkcdpath()` (used to replace `xkcdline()` which is now a deprecated wrapper) and `xkcdaxis()`.
+
+### Drawing a Single Fuzzy Line
+
+We can start with a basic segment (the standard geom path is replaced by `geom_xkcdpath`):
+
+```{r}
+xrange <- c(0, 10)
+yrange <- c(0, 10)
+data_line <- data.frame(x = 1, y = 2, xend = 8, yend = 7)
+
+ggplot() + 
+  geom_xkcdpath(aes(x = x, y = y, xend = xend, yend = yend), 
+                data = data_line, 
+                size = 1.5,
+                xjitteramount = 0.05, 
+                yjitteramount = 0.05) +
+  xkcdaxis(xrange, yrange) +
+  theme_xkcd()
+```
+
+### Applying Axes and Theme
+
+The `xkcdaxis()` function plots the fuzzy X and Y axes and sets the required `coord_cartesian` and `theme_xkcd`.
+
+```{r}
+xrange <- c(10, 35)
+yrange <- c(0.5, 5)
+
+p <- ggplot(mtcars, aes(mpg, wt)) +
+     geom_point() +
+     xkcdaxis(xrange, yrange)
+
+p
+```
+
+### Circles (Heads)
+
+`geom_xkcdpath` can also draw fuzzy circles using the `diameter` aesthetic:
+
+```{r}
+data_circle <- data.frame(x = 20, y = 3, diameter = 2)
+
+ggplot() +
+  geom_xkcdpath(aes(x = x, y = y, diameter = diameter),
+                data = data_circle, 
+                colour = "red", 
+                size = 1.5,
+                xjitteramount = 0.05,
+                yjitteramount = 0.05) +
+  xkcdaxis(xrange, yrange) +
+  theme_xkcd()
+```
+
+## Drawing a Stick Figure (`xkcdman`)
+
+The `xkcdman()` function requires multiple aesthetics to define the figure's position, scale, and limb angles.
+
+```{r}
+man <- data.frame(
+    x=20, y=1.5, scale=1.5, ratioxy=diff(xrange)/diff(yrange),
+    angleofspine=-90,
+    anglerighthumerus=-120, anglelefthumerus=-60,
+    anglerightradius=-120, angleleftradius=-60,
+    anglerightleg=-140, angleleftleg=-140,
+    angleofneck=-90
+)
+
+p + xkcdman(aes(x=x, y=y, scale=scale, ratioxy=ratioxy,
+                angleofspine=angleofspine,
+                anglerighthumerus=anglerighthumerus,
+                anglelefthumerus=anglelefthumerus,
+                anglerightradius=anglerightradius,
+                angleleftradius=angleleftradius,
+                anglerightleg=anglerightleg,
+                angleleftleg=angleleftleg,
+                angleofneck=angleofneck),
+             data=man)
+```
+
+## Drawing Fuzzy Rectangles (`xkcdrect`)
+
+The `xkcdrect()` function draws a filled rectangle with a fuzzy border using four separate `geom_xkcdpath` layers.
+
+```{r}
+volunteers <- data.frame(
+    year = c(2007:2011),
+    number = c(56470, 56998, 59686, 61783, 64251)
+)
+
+ggplot() + 
+  xkcdrect(aes(xmin = year - 0.2, 
+               xmax = year + 0.2,
+               ymin = number - 500, 
+               ymax = number + 500), 
+           data = volunteers, 
+           fillcolour = "pink",
+           bordersize = 1.2) +
+  geom_point(aes(x = year, y = number), data = volunteers) +
+  xkcdaxis(range(volunteers$year), range(volunteers$number)) +
+  theme_xkcd()
+```
+
+## Conclusion
+
+The **xkcd** package is a ggplot2 wrapper that makes graphs look like they came from an XKCD comic and it gives a satisfactory answer to the question How can we make XKCD style graphs in R?

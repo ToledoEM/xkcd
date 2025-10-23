@@ -1,2 +1,8 @@
+^inst/doc
+^vignettes
+^.*\.Rmd$
+^.*\.Rnw$
+^.*\.pdf$
+^.*\.html$
 ^.*\.Rproj$
 ^\.Rproj\.user$
