@@ -1,7 +1,9 @@
+## Emilio Torres Manzanera
+## University of Oviedo
+## Time-stamp: <2018-05-23 12:15 emilio on emilio-despacho>
+## ============================================================
 
-
-
-pointscircunference <- function(x =0, y=0, diameter = 1, ratioxy=1, npoints = 16, alpha=  runif(1, 0, pi/2)){
+pointscircunference <- function(x =0, y=0, diameter = 1, ratioxy=1, npoints = 16, alpha=  runif(1, 0, pi/2), ...) {
   center <- c(x,y)
   r <- rep( diameter / 2, npoints )
   tt <- seq(alpha,2*pi + alpha,length.out = npoints)
@@ -12,15 +14,12 @@ pointscircunference <- function(x =0, y=0, diameter = 1, ratioxy=1, npoints = 16
   r[ sector ] <- r[sector] * 0.95
   xx <- center[1] + r * cos(tt) * ratioxy
   yy <- center[2] + r * sin(tt)
-  return(data.frame(bezier(x = xx, y =yy,evaluation=60)))
+  return(data.frame(Hmisc::bezier(x = xx, y =yy, evaluation=60)))
 }
 
-
-pointssegment <- function(x, y, xend, yend, npoints = 10, xjitteramount= 0, yjitteramount=0, bezier = TRUE) {
-  ##require(Hmisc) # bezier
+pointssegment <- function(x, y, xend, yend, npoints = 10, xjitteramount= 0, yjitteramount=0, bezier = TRUE, ...) {
   if(npoints < 2 )
     stop("npoints must be greater than 1")
-  ## If there are no jitters, do not interpolate
   if( xjitteramount == 0 & yjitteramount == 0) npoints <- 2
   xbegin <- x
   ybegin <- y
@@ -37,153 +36,87 @@ pointssegment <- function(x, y, xend, yend, npoints = 10, xjitteramount= 0, yjit
   x[length(x)] <- xend
   y[length(y)] <- yend
   if(bezier & length(x)>2 & (xjitteramount != 0 | yjitteramount != 0)) {
-    data <- data.frame(bezier(x=x, y=y, evaluation=30))
+    data <- data.frame(Hmisc::bezier(x=x, y=y, evaluation=30))
   }
   else data <- data.frame(x=x,y=y)
   data
 }
 
-
-
-
-#' @rdname geom_xkcdpath
-#' @importFrom ggplot2 ggproto GeomPath aes layer
-#' @importFrom grid gList polylineGrob gpar
-GeomXkcdPath <- ggplot2::ggproto("GeomXkcdPath", ggplot2::GeomPath,
-                                 
-                                 required_aes = c("x", "y"),
-                                 
-                                 default_aes = ggplot2::aes(
-                                   colour = "black", linewidth = 0.5, linetype = 1, alpha = NA,
-                                   xend = NA, yend = NA, diameter = NA,
-                                   xjitteramount = 0, yjitteramount = 0,
-                                   npoints = 30, ratioxy = 1, bezier = TRUE,
-                                   mask = TRUE, group = 1
-                                 ),
-                                 
-                                 draw_group = function(data, panel_params, coord) {
-                                   is_segment <- !is.na(data$xend[1]) & !is.na(data$yend[1])
-                                   is_circle <- !is.na(data$diameter[1])
-                                   
-                                   params <- list(
-                                     npoints = data$npoints[1],
-                                     xjitteramount = data$xjitteramount[1],
-                                     yjitteramount = data$yjitteramount[1],
-                                     ratioxy = data$ratioxy[1],
-                                     bezier = data$bezier[1]
-                                   )
-                                   
-                                   if (is_segment) {
-                                     path_data <- pointssegment(
-                                       x = data$x[1], y = data$y[1], xend = data$xend[1], yend = data$yend[1],
-                                       npoints = params$npoints, xjitteramount = params$xjitteramount,
-                                       yjitteramount = params$yjitteramount, bezier = params$bezier
-                                     )
-                                   } else if (is_circle) {
-                                     path_data <- pointscircunference(
-                                       x = data$x[1], y = data$y[1], diameter = data$diameter[1],
-                                       ratioxy = params$ratioxy, npoints = params$npoints
-                                     )
-                                   } else {
-                                     path_data <- data.frame(
-                                       x = data$x + stats::runif(length(data$x), -data$xjitteramount[1], data$xjitteramount[1]),
-                                       y = data$y + stats::runif(length(data$y), -data$yjitteramount[1], data$yjitteramount[1]),
-                                       group = data$group
-                                     )
-                                   }
-                                   
-                                   grob_list <- grid::gList()
-                                   data_grob <- coord$transform(path_data, panel_params)
-                                   
-                                   draw_aes <- data[1, names(data) %in% names(ggplot2::GeomPath$default_aes)]
-                                   
-                                   if (data$mask[1] == TRUE) {
-                                     mask_size <- max(draw_aes$size * 2, 3)
-                                     mask_grob <- grid::polylineGrob(
-                                       x = data_grob$x, y = data_grob$y, id = data_grob$group,
-                                       default.units = "native",
-                                       gp = grid::gpar(
-                                         col = "white",
-                                         lwd = mask_size * .pt,
-                                         lty = draw_aes$linetype,
-                                         lineend = "round"
-                                       )
-                                     )
-                                     grob_list <- grid::gList(grob_list, mask_grob)
-                                   }
-                                   
-                                   line_grob <- grid::polylineGrob(
-                                     x = data_grob$x, y = data_grob$y, id = data_grob$group,
-                                     default.units = "native",
-                                     gp = grid::gpar(
-                                       col = draw_aes$colour,
-                                       lwd = draw_aes$size * .pt,
-                                       lty = draw_aes$linetype,
-                                       lineend = "round"
-                                     )
-                                   )
-                                   
-                                   grob_list <- grid::gList(grob_list, line_grob)
-                                   
-                                   return(grob_list)
-                                 }
-)
-
-#' @title Draw lines or circles in an XKCD style
-#'
-#' @description This function draws handwritten lines, segments, circles, or paths in the XKCD style.
-#'
-#' @usage
-#' geom_xkcdpath(mapping = NULL, data = NULL, stat = "identity", position = "identity", ...,
-#'   xjitteramount = NULL, yjitteramount = NULL, npoints = NULL, ratioxy = NULL, 
-#'   bezier = FALSE, mask = FALSE, na.rm = FALSE, show.legend = NA, inherit.aes = TRUE)
-#'
-#' @inheritParams ggplot2::geom_path
-#' @param mapping Aesthetic mapping generated by \code{\link[ggplot2]{aes}}.
-#' @param data Dataset used in this layer.
-#' @param xjitteramount Amount of random horizontal displacement (jitter) to apply to the path points (in data units).
-#' @param yjitteramount Amount of random vertical displacement (jitter) to apply to the path points (in data units).
-#' @param npoints Number of points for interpolation, which determines the fidelity of the jittered line.
-#' @param ratioxy The ratio of the x range to the y range (e.g., \code{diff(xrange) / diff(yrange)}), used to correctly scale circular elements.
-#' @param bezier Logical. If \code{TRUE}, applies Bezier curve smoothing via \code{Hmisc::bezier} to the jittered path.
-#' @param mask Logical. If \code{TRUE}, draws a thick white mask path underneath the primary path to simulate a "hand-drawn" outline.
-#' @param ... Other arguments passed to the Geom.
-#'
-#' @details
-#' Required aesthetics depend on the geometry:
-#' \itemize{
-#' \item \strong{Segment}: \code{x, y, xend, yend}
-#' \item \strong{Circle}: \code{x, y, diameter}
-#' \item \strong{Path}: \code{x, y}
-#' }
-#'
+#' @title Draw lines or circles
+#' @param mapping Aesthetic mapping
+#' @param data Dataset
+#' @param typexkcdline "segment" or "circunference"
+#' @param mask Logical
+#' @param ... Additional arguments
 #' @export
-geom_xkcdpath <- function(mapping = NULL, data = NULL, stat = "identity",
-                          position = "identity", ..., na.rm = FALSE,
-                          show.legend = NA, inherit.aes = TRUE) {
-  ggplot2::layer(
-    data = data,
-    mapping = mapping,
-    stat = stat,
-    geom = GeomXkcdPath,
-    position = position,
-    show.legend = show.legend,
-    inherit.aes = inherit.aes,
-    params = list(
-      na.rm = na.rm,
-      ...
-    )
+#' @import ggplot2
+xkcdline <- function(mapping, data, typexkcdline="segment", mask = TRUE, ...) {
+  if(typexkcdline == "segment" ){
+    fun <- "pointssegment"
+    requiredaesthetics <-  c("x","y","xend","yend")
+  } else if(typexkcdline == "circunference" ) {
+    fun <- "pointscircunference"
+    requiredaesthetics <-  c("x","y","diameter")
+  } else stop("typexkcdline must be segment or circle")
+  
+  nsegments <- dim(data)[1]
+  datafun <- data
+  argList<-list(...)
+  fcn <- get(fun, mode = "function")
+  argsfcntt <-  names(formals(fcn))
+  argsfcn <- argsfcntt[ argsfcntt != "..."]
+  
+  for( i in intersect(argsfcn, names(argList))) {
+    if(!(is.null(argList[i])==TRUE)){
+      if(length(argList[[i]]) == 1 ) datafun[, i] <- unlist(rep(argList[[i]],nsegments))
+      if(length(argList[[i]]) == nsegments ) datafun[, i] <- argList[[i]]
+    }
+  }
+  
+  listofinterpolates <- list()
+  for(j in 1:nrow(datafun)) {
+    row <- datafun[j,]
+    listofinterpolates[[j]] <- do.call(fcn, as.list(row))
+  }
+  
+  listofinterpolateswithillustrativedata <- lapply(1:nsegments,
+                                                   function(i) {
+                                                     dti <- listofinterpolates[[i]]
+                                                     illustrativevariables <- names(datafun)[ ! names(datafun) %in% names(dti) ]
+                                                     dti[, illustrativevariables] <- datafun[i, illustrativevariables]
+                                                     dti}
   )
+  
+  listofpaths <- lapply(listofinterpolateswithillustrativedata,
+                          function(x, mapping, mask, ...) {
+                          pathmask <- NULL
+                          if(mask) {
+                            argList <- list(...)
+                            for(i in intersect(c("color","colour"), names(argList)))
+                              argList[i] <- NULL
+                            # Determine user-specified linewidth (support legacy 'size')
+                            user_lw <- NULL
+                            if ("linewidth" %in% names(argList)) user_lw <- argList$linewidth
+                            if (is.null(user_lw) && "size" %in% names(argList)) {
+                              user_lw <- argList$size
+                              argList$size <- NULL
+                            }
+                            if (is.null(user_lw)) user_lw <- 0.8
+
+                            argList$mapping <- aes(x = x, y = y)
+                            argList$data <- x
+                            # mask should be thicker than the main line
+                            argList$linewidth <- max(user_lw * 2, 1)
+                            argList$colour <- "white"
+                            pathmask <- do.call("geom_path", argList)
+                          }
+                          # Main path uses the original '...' so user can specify aesthetics
+                          c(pathmask, geom_path(aes(x = x, y = y), data = x, ...))
+                        },
+                        mapping = mapping,
+                        mask= mask
+  )
+  listofpaths
 }
 
-#' @title Draw lines or circles in an XKCD style (Deprecated)
-#'
-#' @description This function is deprecated. Use \code{\link{geom_xkcdpath}} instead.
-#'
-#' @inheritParams geom_xkcdpath
-#' @param typexkcdline DEPRECATED. The new Geom detects type from aesthetics.
-#' @export
-xkcdline <- function(mapping = NULL, data = NULL, typexkcdline = "segment", ...) {
-  warning("xkcdline() is deprecated. Please use geom_xkcdpath() instead.")
-  geom_xkcdpath(mapping = mapping, data = data, ...)
-}
+if (getRversion() >= "2.15.1") utils::globalVariables(c("x", "y"))

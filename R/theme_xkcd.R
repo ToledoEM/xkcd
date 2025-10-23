@@ -36,7 +36,7 @@ theme_xkcd <- function(){
   # Check for the font and apply the text element
   if ("xkcd" %in% extrafont::fonts()) {
     base_theme + theme(
-      text = element_text(linewidth = 16, family = "xkcd")
+      text = element_text(size = 16, family = "xkcd")
     )
   } else {
     # Using message() instead of warning() is often preferred for theme
@@ -48,7 +48,7 @@ theme_xkcd <- function(){
     
     # Fallback theme using the default ggplot2 font
     base_theme + theme(
-      text = element_text(linewidth = 16)
+      text = element_text(size = 16)
     )
   }
 }
