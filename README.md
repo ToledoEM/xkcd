@@ -1,5 +1,8 @@
 # xkcd
 
+
+![](https://toledoem.github.io/img/xkcd_logo.png)
+
 An R package to create hand-drawn (xkcd-style) plots and elements for ggplot2.
 
 This repository contains the source for the `xkcd` package (development version). Originally from https://r-forge.r-project.org/projects/xkcd/ which is deprecated and now maintained independently.

@@ -7,3 +7,7 @@
 .DS_Store
 *.Rcheck
 ..Rcheck
+/.quarto/
+**/*.quarto_ipynb
+*.svg
+docs/*
