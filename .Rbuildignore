@@ -10,3 +10,6 @@ vignettes/.DS_Store
 ^Meta$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+
+^docs$
+^docs/

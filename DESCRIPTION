@@ -10,12 +10,11 @@ Authors@R: c(person(given = "Emilio", family = "Torres-Manzanera", role = c("aut
         person(given = "Enrique", family = "Toledo", role = c("ctb","cre"), email = "enriquetoledo@gmail.com"))
 VignetteBuilder: knitr
 Description: Provides custom geoms and themes to create charts and graphics in the distinctive, hand-drawn XKCD webcomic style using the ggplot2 framework. The package utilizes custom layers for jittered lines, segments, circles, and figures, and includes a theme that supports the necessary XKCD font.
-License: MIT
+License: MIT + file LICENSE
 URL: https://github.com/ToledoEM/xkcd
 BugReports: https://github.com/ToledoEM/xkcd/issues
 Depends: R (>= 4.0), ggplot2 (>= 3.4.0)
 Imports: 
-    extrafont, 
     Hmisc, 
     stats,
     grid,
@@ -28,5 +27,6 @@ Suggests:
     , splancs
     , lattice
     , pkgdown
+    , extrafont
 RoxygenNote: 7.3.3
 Encoding: UTF-8

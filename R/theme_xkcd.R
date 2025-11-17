@@ -9,7 +9,6 @@
 #'
 #' @return A \code{\link[ggplot2]{theme}} object.
 #' @import ggplot2
-#' @import extrafont
 #' @note
 #' The "xkcd" font must be installed and registered with \code{extrafont} for the
 #' full effect. See the vignette \code{vignette("xkcd-intro")} for installation instructions.
