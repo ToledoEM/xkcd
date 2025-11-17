@@ -3,6 +3,7 @@
 .RData
 .Ruserdata
 /doc/
+xkcd_*.tar.gz
 /Meta/
 .DS_Store
 *.Rcheck
