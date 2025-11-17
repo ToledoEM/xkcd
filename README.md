@@ -57,6 +57,30 @@ download.file(
 font_import(pattern = "[X/x]kcd", prompt = FALSE)
 ```
 
+### Quick font-check (fundamental)
+
+Run this small example to verify the `xkcd` font is available and to produce a quick check plot. This should be run locally after installing the font and registering it with `extrafont`.
+
+```r
+# Font availability check and example plot
+library(extrafont)
+library(ggplot2)
+
+if ('xkcd' %in% extrafont::fonts()) {
+  p <- ggplot() + geom_point(aes(x = mpg, y = wt), data = mtcars) +
+    theme(text = element_text(size = 16, family = "xkcd"))
+} else {
+  warning("xkcd fonts are not installed; using default font for plot.")
+  p <- ggplot() + geom_point(aes(x = mpg, y = wt), data = mtcars)
+}
+
+print(p)
+
+# Optionally save a small PNG to `vignettes/` for documentation purposes
+try({
+  ggsave(filename = file.path("vignettes", "font_check.png"), plot = p, width = 6, height = 4)
+}, silent = TRUE)
+```
 ### Load Fonts for Plotting
 
 Before plotting, register fonts with your graphics device:
