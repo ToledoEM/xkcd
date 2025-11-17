@@ -51,7 +51,7 @@ library(extrafont)
 
 # Download and install the font
 download.file(
-  "https://github.com/ipython/xkcd-font/blob/master/xkcd.ttf?raw=true",
+  "https://toledoem.github.io/img/xkcd.ttf",
   dest = "xkcd.ttf", mode = "wb"
 )
 font_import(pattern = "[X/x]kcd", prompt = FALSE)

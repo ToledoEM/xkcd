@@ -59,7 +59,7 @@ If the XKCD fonts are not installed in the system, you should install them using
 ```{r eval=FALSE}
 library(extrafont)
 tryCatch({
-  download.file("https://github.com/ipython/xkcd-font/blob/master/xkcd.ttf?raw=true",
+  download.file("https://toledoem.github.io/img/xkcd.ttf",
                 dest = "xkcd.ttf", mode = "wb", timeout = 60)
 }, error = function(e) {
   warning("Failed to download xkcd font. See https://github.com/ipython/xkcd-font")
