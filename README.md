@@ -122,6 +122,14 @@ Below are three examples from the vignette:
 
 Set up a development workflow with:
 
+**Note:** A TeX distribution (for example, MacTeX or TinyTeX) is required to compile vignettes or to build the PDF manual during development. If LaTeX is not available you can either skip the manual with `--no-manual` when checking or install TinyTeX from R:
+
+```r
+# from R: install tinytex and the TinyTeX distribution
+install.packages("tinytex")
+tinytex::install_tinytex()
+```
+
 ```r
 # Regenerate documentation from roxygen comments
 devtools::document()

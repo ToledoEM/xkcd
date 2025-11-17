@@ -15,10 +15,10 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 ## Introduction and Main Motivation
 
-*Original from author: "Emilio Torres-Manzanera" pulled from https://github.com/cran/xkcd/* 
+Original from author: "Emilio Torres-Manzanera" pulled from https://github.com/cran/xkcd/* 
 
 
-The [XKCD](http://xkcd.com) web site is a web comic created by [Randall Munroe](http://xkcd.com), who described it as a web comic of romance, sarcasm, math, and language. He uses stick figures, very simple drawings composed of a few lines and curves, in his comics strips, that are available under the Creative Commons Attribution-NonCommercial 2.5 License.
+The [XKCD](https://xkcd.com) web site is a web comic created by [Randall Munroe](https://xkcd.com), who described it as a web comic of romance, sarcasm, math, and language. He uses stick figures, very simple drawings composed of a few lines and curves, in his comics strips, that are available under the Creative Commons Attribution-NonCommercial 2.5 License.
 
 Due to the popularity of Randall Munroe's work, several questions about how to draw XKCD style graphs using different programming languages were posted in Stack Overflow. Many authors tried to replicate such style using different programming languages. For instance, there are implementations in Mathematica and Matlab using image processing distortion; a Python library focused on this style; and proposals in LaTeX.
 

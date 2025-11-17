@@ -13,3 +13,6 @@ vignettes/.DS_Store
 
 ^docs$
 ^docs/
+
+^_pkgdown\.yml$
+

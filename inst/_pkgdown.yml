@@ -1,9 +1,6 @@
 url: https://toledoem.github.io/xkcd/
 destination: docs/
 
-url: https://toledoem.github.io/xkcd/
-destination: docs/
-
 template:
   bootstrap: 5
   includes:
@@ -23,6 +20,4 @@ articles:
   - title: Vignettes
     contents:
       - xkcd-intro
-  bootstrap: 5
 
-  includes:
