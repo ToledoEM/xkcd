@@ -16,3 +16,7 @@ vignettes/.DS_Store
 
 ^_pkgdown\.yml$
 
+^cran-comments\.md$
+^.*\.tar\.gz$
+^LICENSE\.md$
+

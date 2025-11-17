@@ -112,11 +112,11 @@ This is opt-in to avoid surprising side-effects during package attach.
 
 Below are three examples from the vignette:
 
-![Font availability check (font_check)](vignettes/vignettes/font_check.png)
+![Font availability check (font_check)](vignettes/font_check.png)
 
-![Mother's Day example (mommy_plot)](vignettes/vignettes/mommy_plot.png)
+![Mother's Day example (mommy_plot)](vignettes/mommy_plot.png)
 
-![Caritas volunteers example (caritas_plot)](vignettes/vignettes/caritas_plot.png)
+![Caritas volunteers example (caritas_plot)](vignettes/caritas_plot.png)
 
 ## Development
 
