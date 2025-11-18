@@ -5,7 +5,8 @@ Version: 0.1.0
 Date: 2025-10-23
 Maintainer: Enrique Toledo <enriquetoledo@gmail.com>
 Authors@R: c(
-    person(given = "Emilio", family = "Torres-Manzanera", role = "aut"),
+    person(given = "Emilio", family = "Torres-Manzanera", role = "aut",
+    email= "torres@uniovi.es"),
     person(given = "Enrique", family = "Toledo", role = c("ctb", "cre"), 
            email = "enriquetoledo@gmail.com"))
 VignetteBuilder: knitr
