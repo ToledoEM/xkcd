@@ -19,6 +19,13 @@ remotes::install_github("ToledoEM/xkcd")
 devtools::install_github("ToledoEM/xkcd")
 ```
 
+Install the latest CRAN version:
+
+```r
+install.packages("xkcd")
+```
+
+
 ## Quick Start
 
 ```r
@@ -56,6 +63,9 @@ download.file(
 )
 font_import(pattern = "[X/x]kcd", prompt = FALSE)
 ```
+
+You can also download the font from the iphyton repository XKCD-font: [xkcd.ttf](https://github.com/ipython/xkcd-font/blob/master/xkcd-script/font/xkcd-script.ttf?raw=true)
+
 
 ### Quick font-check (fundamental)
 
