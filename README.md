@@ -9,6 +9,12 @@ This repository contains the source for the `xkcd` package (development version)
 
 ## Install
 
+Install the latest CRAN version:
+
+```r
+install.packages("xkcd")
+```
+
 Install the current development version from GitHub:
 
 ```r
@@ -18,6 +24,7 @@ remotes::install_github("ToledoEM/xkcd")
 # or using devtools
 devtools::install_github("ToledoEM/xkcd")
 ```
+
 
 ## Quick Start
 
@@ -57,6 +64,9 @@ download.file(
 font_import(pattern = "[X/x]kcd", prompt = FALSE)
 ```
 
+You can also download the font from the iphyton repository XKCD-font: [xkcd.ttf](https://github.com/ipython/xkcd-font/blob/master/xkcd-script/font/xkcd-script.ttf?raw=true)
+
+
 ### Quick font-check (fundamental)
 
 Run this small example to verify the `xkcd` font is available and to produce a quick check plot. This should be run locally after installing the font and registering it with `extrafont`.
@@ -81,6 +91,12 @@ try({
   ggsave(filename = file.path("vignettes", "font_check.png"), plot = p, width = 6, height = 4)
 }, silent = TRUE)
 ```
+
+![test :-) ](vignettes/font_check.png)
+
+      
+
+
 ### Load Fonts for Plotting
 
 Before plotting, register fonts with your graphics device:
@@ -157,7 +173,7 @@ The package requires:
 - **ggplot2** — Graphics framework
 - **Hmisc** — Bezier curve interpolation
 - **grid** — Low-level graphics primitives
-- **extrafont** (optional) — Font management
+- **extrafont** — Font management
 
 Install dependencies with:
 
