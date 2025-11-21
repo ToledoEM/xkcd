@@ -126,9 +126,7 @@ This is opt-in to avoid surprising side-effects during package attach.
 
 ## Example Images
 
-Below are three examples from the vignette:
-
-![Font availability check (font_check)](vignettes/font_check.png)
+Below are two examples from the vignette:
 
 ![Mother's Day example (mommy_plot)](vignettes/mommy_plot.png)
 
