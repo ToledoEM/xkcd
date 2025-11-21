@@ -9,6 +9,12 @@ This repository contains the source for the `xkcd` package (development version)
 
 ## Install
 
+Install the latest CRAN version:
+
+```r
+install.packages("xkcd")
+```
+
 Install the current development version from GitHub:
 
 ```r
@@ -17,12 +23,6 @@ remotes::install_github("ToledoEM/xkcd")
 
 # or using devtools
 devtools::install_github("ToledoEM/xkcd")
-```
-
-Install the latest CRAN version:
-
-```r
-install.packages("xkcd")
 ```
 
 
@@ -91,6 +91,12 @@ try({
   ggsave(filename = file.path("vignettes", "font_check.png"), plot = p, width = 6, height = 4)
 }, silent = TRUE)
 ```
+
+![test :-) ](vignettes/font_check.png)
+
+      
+
+
 ### Load Fonts for Plotting
 
 Before plotting, register fonts with your graphics device:
@@ -167,7 +173,7 @@ The package requires:
 - **ggplot2** — Graphics framework
 - **Hmisc** — Bezier curve interpolation
 - **grid** — Low-level graphics primitives
-- **extrafont** (optional) — Font management
+- **extrafont** — Font management
 
 Install dependencies with:
 
