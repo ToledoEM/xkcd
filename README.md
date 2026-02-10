@@ -92,7 +92,7 @@ try({
 }, silent = TRUE)
 ```
 
-![test :-) ](vignettes/font_check.png)
+![](vignettes/font_check.png)
 
       
 

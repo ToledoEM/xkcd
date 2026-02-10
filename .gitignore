@@ -12,3 +12,4 @@ xkcd_*.tar.gz
 **/*.quarto_ipynb
 *.svg
 docs/*
+/doc/img/logs_cran.r
