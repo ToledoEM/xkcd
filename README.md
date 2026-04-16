@@ -1,7 +1,7 @@
 # xkcd
 
 
-![](https://toledoem.github.io/img/xkcd_logo.png)
+![xkcd package logo](https://toledoem.github.io/img/xkcd_logo.png)
 
 An R package to create hand-drawn (xkcd-style) plots and elements for ggplot2.
 
@@ -92,7 +92,7 @@ try({
 }, silent = TRUE)
 ```
 
-![test :-) ](vignettes/font_check.png)
+![Font check example plot](man/figures/font_check.png)
 
       
 
@@ -123,6 +123,12 @@ library(xkcd)
 ```
 
 This is opt-in to avoid surprising side-effects during package attach.
+
+## Figure Pose Helper
+
+An interactive browser tool to design `xkcdman()` poses visually — drag limbs, adjust sliders, and copy the generated R code directly into your script.
+
+**[Open the Figure Pose Helper](https://toledoem.github.io/xkcd/stickfigurehelper/index.html)**
 
 ## Example Images
 
@@ -158,11 +164,19 @@ devtools::build_vignettes()
 devtools::install_local()
 ```
 
-To render the vignette directly:
+To render the vignettes directly:
 
 ```r
 rmarkdown::render("vignettes/xkcd-intro.Rmd")
+rmarkdown::render("vignettes/xkcd-figure.Rmd")
+rmarkdown::render("vignettes/xkcd-penguins.Rmd")
 ```
+
+Three vignettes are available:
+
+- **xkcd-intro** — Introduction and basic usage
+- **xkcd-figure** — Drawing xkcd-style stick figures
+- **xkcd-penguins** — Example with the Palmer Penguins dataset
 
 ## Dependencies
 

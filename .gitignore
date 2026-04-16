@@ -1,14 +1,26 @@
+# R files
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-/doc/
-xkcd_*.tar.gz
-/Meta/
-.DS_Store
 *.Rcheck
 ..Rcheck
+
+/doc/
+# ?
+/Meta/
+
+# OSX
+.DS_Store
+
+
+
+# render
 /.quarto/
 **/*.quarto_ipynb
-*.svg
+
+# pkgdown
 docs/*
+inst/*
+!inst/_pkgdown.yml
+vignettes/*.html
