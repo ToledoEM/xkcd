@@ -24,3 +24,4 @@ docs/*
 inst/*
 !inst/_pkgdown.yml
 vignettes/*.html
+build-site.sh

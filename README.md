@@ -1,5 +1,8 @@
 # xkcd
 
+[![CRAN status](https://www.r-pkg.org/badges/version/xkcd)](https://CRAN.R-project.org/package=xkcd)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/xkcd)](https://CRAN.R-project.org/package=xkcd)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ![xkcd package logo](https://toledoem.github.io/img/xkcd_logo.png)
 
