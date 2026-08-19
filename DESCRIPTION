@@ -14,7 +14,7 @@ Description: Provides custom geoms and themes to create charts and graphics in
     The package utilizes custom layers for jittered lines, segments, circles, and 
     figures, and includes a theme that supports the necessary 'XKCD' font.
 License: MIT + file LICENSE
-URL: https://github.com/ToledoEM/xkcd, https://toledoem.github.io/xkcd
+URL: https://github.com/ToledoEM/xkcd, https://toledoem.github.io/xkcd/
 BugReports: https://github.com/ToledoEM/xkcd/issues
 Depends: R (>= 4.0), ggplot2 (>= 3.4.0)
 Imports:
