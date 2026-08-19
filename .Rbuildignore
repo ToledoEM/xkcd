@@ -20,3 +20,8 @@ vignettes/.DS_Store
 ^.*\.tar\.gz$
 ^LICENSE\.md$
 
+^build-site\.sh$
+^stickfigurehelper$
+^\.github$
+^codecov\.yml$
+

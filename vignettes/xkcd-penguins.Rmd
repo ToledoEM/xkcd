@@ -30,7 +30,7 @@ observed on islands near Palmer Station, Antarctica.
 
 ```{r libraries}
 library(xkcd)
-library(tidyverse)
+library(dplyr)
 library(palmerpenguins)
 
 # Drop rows with missing values for cleaner plots
@@ -190,9 +190,9 @@ ggplot() +
   xkcdrect(
     aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
     data = avg_mass,
-    fillcolour   = c("#f28e2b", "#4e79a7", "#59a14f"),
-    bordercolour = "black",
-    borderlinewidth = 1
+    fill      = c("#f28e2b", "#4e79a7", "#59a14f"),
+    colour    = "black",
+    linewidth = 1
   ) +
   annotate("text",
            x     = 1:3,
@@ -417,7 +417,7 @@ ggplot() +
   xkcdrect(
     aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
     data = counts,
-    fillcolour = "#aecbfa", bordercolour = "black", borderlinewidth = 1
+    fill = "#aecbfa", colour = "black", linewidth = 1
   ) +
   geom_xkcdpath(
     aes(x = x, y = y, xend = xend, yend = yend),
