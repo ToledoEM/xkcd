@@ -48,6 +48,38 @@ ggplot(df, aes(x = x, y = y)) +
 - Uses `linewidth` (ggplot2 >= 3.4.0) for line thickness; older code using `size` is supported where possible.
 - Requires xkcd fonts to be installed; see **Fonts** section below.
 
+### New in 0.1.1
+
+- **Reproducible plots.** `geom_xkcdpath()`, `xkcdrect()` and `xkcdman()` take a
+  `seed` argument, so the same plot renders identically every time. The global
+  random state is left untouched.
+
+  ```r
+  ggplot(df, aes(x = x, y = y)) +
+    geom_xkcdpath(linewidth = 1, seed = 42) +
+    theme_xkcd()
+  ```
+
+- **`wobble` argument** scales how much the lines wander. `1` is the default look,
+  `0` draws them straight.
+
+- **`xkcdrect()` is now a standard geom** (breaking change). It returns a single
+  layer and uses the usual `fill`, `colour` and `linewidth` aesthetics, which can be
+  mapped to variables. Faceting and plot-level aesthetics now work.
+
+  ```r
+  # before
+  xkcdrect(mapping, data, fillcolour = "pink", borderlinewidth = 1)
+
+  # now
+  xkcdrect(mapping, data, fill = "pink", linewidth = 1)
+  ```
+
+  The old `fillcolour` / `bordercolour` / `borderlinewidth` arguments still work for
+  one release but warn.
+
+- **`xkcdline()` is deprecated** in favour of `geom_xkcdpath()` and warns when used.
+
 ## Fonts
 
 To use xkcd fonts in your plots, you need to install and register them with R's graphics system.
@@ -187,13 +219,13 @@ The package requires:
 
 - **ggplot2** — Graphics framework
 - **Hmisc** — Bezier curve interpolation
-- **grid** — Low-level graphics primitives
+- **grid** — Low-level graphics primitives (ships with R, no install needed)
 - **extrafont** — Font management
 
 Install dependencies with:
 
 ```r
-install.packages(c("ggplot2", "Hmisc", "grid", "extrafont"))
+install.packages(c("ggplot2", "Hmisc", "extrafont"))
 ```
 
 ## Contributing
