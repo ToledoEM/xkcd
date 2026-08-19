@@ -34,6 +34,7 @@ Suggests:
     dplyr,
     ggrepel,
     systemfonts,
+    covr,
     testthat (>= 3.0.0)
 Encoding: UTF-8
 Config/testthat/edition: 3

@@ -1,8 +1,11 @@
 # xkcd
 
+[![R-CMD-check](https://github.com/ToledoEM/xkcd/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ToledoEM/xkcd/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/ToledoEM/xkcd/graph/badge.svg)](https://app.codecov.io/gh/ToledoEM/xkcd)
 [![CRAN status](https://www.r-pkg.org/badges/version/xkcd)](https://CRAN.R-project.org/package=xkcd)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/xkcd)](https://CRAN.R-project.org/package=xkcd)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 
 ![xkcd package logo](https://toledoem.github.io/img/xkcd_logo.png)
 

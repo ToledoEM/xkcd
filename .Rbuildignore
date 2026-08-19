@@ -22,4 +22,6 @@ vignettes/.DS_Store
 
 ^build-site\.sh$
 ^stickfigurehelper$
+^\.github$
+^codecov\.yml$
 
