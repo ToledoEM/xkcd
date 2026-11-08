@@ -1,0 +1,1074 @@
+<!doctype html>
+<html lang="en">
+    <script
+        data-goatcounter="https://etoledo.goatcounter.com/count"
+        async
+        src="//gc.zgo.at/count.js"
+    ></script>
+
+    <head>
+        <meta charset="UTF-8" />
+        <title>XKCD figure Pose Helper</title>
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: monospace;
+                background: #fff;
+                color: #000;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            /* ── Page subtitle ── */
+            #page-subtitle {
+                text-align: center;
+                font-size: 18px;
+                font-weight: bold;
+                padding: 6px 0 4px;
+                border-bottom: 1px solid #ddd;
+                flex-shrink: 0;
+                background: #fff;
+            }
+            #page-subtitle small {
+                font-size: 11px;
+                font-weight: normal;
+                color: #666;
+                margin-left: 10px;
+            }
+
+            /* ── Main layout ── */
+            #main {
+                display: flex;
+                flex: 1;
+                overflow: hidden;
+            }
+
+            /* ── Sidebar ── */
+            #sidebar {
+                width: 300px;
+                min-width: 300px;
+                border-right: 1px solid #aaa;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                background: #fff;
+            }
+
+            #controls {
+                padding: 10px 14px;
+                overflow-y: auto;
+                flex: 1;
+                font-size: 12px;
+            }
+
+            .section-title {
+                font-size: 10px;
+                font-weight: bold;
+                text-transform: uppercase;
+                color: #888;
+                margin: 12px 0 5px;
+                letter-spacing: 1px;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 2px;
+            }
+
+            .angle-row {
+                display: flex;
+                align-items: center;
+                margin-bottom: 6px;
+                gap: 6px;
+            }
+            .angle-row label {
+                width: 150px;
+                font-size: 10px;
+                color: #000;
+                cursor: pointer;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-family: monospace;
+            }
+            .angle-row label:hover {
+                text-decoration: underline;
+            }
+            .angle-row input[type="range"] {
+                flex: 1;
+                cursor: pointer;
+            }
+            .angle-val {
+                width: 44px;
+                font-size: 10px;
+                color: #555;
+                text-align: right;
+                font-family: monospace;
+            }
+
+            /* ── Code output ── */
+            #output-section {
+                border-top: 1px solid #aaa;
+                padding: 10px 14px;
+                background: #f9f9f9;
+            }
+            #output-section h2 {
+                font-size: 11px;
+                margin-bottom: 6px;
+                color: #333;
+                font-weight: bold;
+            }
+            #code-output {
+                background: #fff;
+                color: #000;
+                font-size: 9.5px;
+                line-height: 1.55;
+                padding: 8px;
+                border: 1px solid #ccc;
+                white-space: pre;
+                overflow-x: auto;
+                max-height: 210px;
+                overflow-y: auto;
+                font-family: monospace;
+            }
+            #reset-btn {
+                margin-top: 5px;
+                width: 100%;
+                padding: 5px;
+                background: #fff;
+                color: #000;
+                border: 1px solid #aaa;
+                cursor: pointer;
+                font-family: monospace;
+                font-size: 12px;
+                transition: background 0.1s;
+            }
+            #reset-btn:hover {
+                background: #f5f5f5;
+            }
+
+            #copy-btn {
+                margin-top: 6px;
+                width: 100%;
+                padding: 5px;
+                background: #fff;
+                color: #00f;
+                border: 1px solid #aaa;
+                cursor: pointer;
+                font-family: monospace;
+                font-size: 12px;
+                transition: background 0.1s;
+            }
+            #copy-btn:hover {
+                background: #eef;
+                text-decoration: underline;
+            }
+            #copy-btn.copied {
+                color: #060;
+                border-color: #060;
+            }
+
+            /* ── Canvas area ── */
+            #canvas-wrap {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            #canvas-hint {
+                padding: 4px 14px;
+                font-size: 11px;
+                color: #555;
+                border-bottom: 1px solid #ddd;
+                display: flex;
+                justify-content: space-between;
+                background: #fff;
+                flex-shrink: 0;
+            }
+            #hover-info {
+                color: #888;
+            }
+
+            canvas {
+                flex: 1;
+                cursor: crosshair;
+                display: block;
+                background: #fff;
+            }
+
+            .hint {
+                font-size: 10px;
+                color: #aaa;
+                margin-top: 3px;
+            }
+
+            select#pose-select {
+                width: 100%;
+                padding: 4px;
+                font-family: monospace;
+                font-size: 12px;
+                border: 1px solid #aaa;
+                margin-bottom: 3px;
+                cursor: pointer;
+                background: #fff;
+            }
+
+            /* ── Footer ── */
+            #footer {
+                border-top: 1px solid #aaa;
+                font-size: 10px;
+                color: #666;
+                padding: 4px 16px;
+                text-align: center;
+                background: #fff;
+                flex-shrink: 0;
+            }
+            #footer a {
+                color: #00f;
+                text-decoration: none;
+            }
+            #footer a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="page-subtitle">
+            xkcd Figure Pose Helper
+            <small>drag segments · adjust sliders · copy R code</small>
+        </div>
+
+        <div id="main">
+            <div id="sidebar">
+                <div id="controls">
+                    <div class="section-title">Preset poses</div>
+                    <select id="pose-select">
+                        <option value="standing">Standing</option>
+                        <option value="armsup">Arms up</option>
+                        <option value="walking">Walking</option>
+                        <option value="pointing">Pointing right</option>
+                        <option value="falling">Falling</option>
+                    </select>
+                    <div class="hint">Select a preset then tweak below</div>
+                    <button id="reset-btn">Reset to standing</button>
+
+                    <div class="section-title">Scale &amp; ratio</div>
+                    <div class="angle-row">
+                        <label title="scale">scale</label>
+                        <input
+                            type="range"
+                            id="sl-scale"
+                            min="0.04"
+                            max="0.4"
+                            step="0.005"
+                            value="0.12"
+                        />
+                        <span class="angle-val" id="v-scale">1.50</span>
+                    </div>
+                    <div class="angle-row">
+                        <label title="ratioxy">ratioxy</label>
+                        <input
+                            type="range"
+                            id="sl-ratioxy"
+                            min="0.5"
+                            max="3"
+                            step="0.05"
+                            value="1"
+                        />
+                        <span class="angle-val" id="v-ratioxy">1.00</span>
+                    </div>
+
+                    <div class="section-title">
+                        Angles (drag segment on canvas or use sliders)
+                    </div>
+
+                    <!-- Each slider: id=sl-<key>, value display: id=v-<key> -->
+                    <div class="angle-row">
+                        <label
+                            title="angleofneck"
+                            data-part="neck"
+                            style="color: #e41a1c"
+                            >angleofneck</label
+                        >
+                        <input
+                            type="range"
+                            id="sl-neck"
+                            min="-3.14159"
+                            max="3.14159"
+                            step="0.001"
+                            value="-1.5708"
+                        />
+                        <span class="angle-val" id="v-neck">-π/2</span>
+                    </div>
+                    <div class="angle-row">
+                        <label
+                            title="angleofspine"
+                            data-part="spine"
+                            style="color: #377eb8"
+                            >angleofspine</label
+                        >
+                        <input
+                            type="range"
+                            id="sl-spine"
+                            min="-3.14159"
+                            max="3.14159"
+                            step="0.001"
+                            value="-1.5708"
+                        />
+                        <span class="angle-val" id="v-spine">-π/2</span>
+                    </div>
+                    <div class="angle-row">
+                        <label
+                            title="anglerighthumerus"
+                            data-part="rarm1"
+                            style="color: #ff7f00"
+                            >anglerighthumerus</label
+                        >
+                        <input
+                            type="range"
+                            id="sl-rarm1"
+                            min="-3.14159"
+                            max="3.14159"
+                            step="0.001"
+                            value="-0.5236"
+                        />
+                        <span class="angle-val" id="v-rarm1">-π/6</span>
+                    </div>
+                    <div class="angle-row">
+                        <label
+                            title="anglerightradius"
+                            data-part="rarm2"
+                            style="color: #ff7f00"
+                            >anglerightradius</label
+                        >
+                        <input
+                            type="range"
+                            id="sl-rarm2"
+                            min="-3.14159"
+                            max="3.14159"
+                            step="0.001"
+                            value="0.5236"
+                        />
+                        <span class="angle-val" id="v-rarm2">π/6</span>
+                    </div>
+                    <div class="angle-row">
+                        <label
+                            title="anglelefthumerus"
+                            data-part="larm1"
+                            style="color: #4daf4a"
+                            >anglelefthumerus</label
+                        >
+                        <input
+                            type="range"
+                            id="sl-larm1"
+                            min="-3.14159"
+                            max="3.14159"
+                            step="0.001"
+                            value="-2.0944"
+                        />
+                        <span class="angle-val" id="v-larm1">-2π/3</span>
+                    </div>
+                    <div class="angle-row">
+                        <label
+                            title="angleleftradius"
+                            data-part="larm2"
+                            style="color: #4daf4a"
+                            >angleleftradius</label
+                        >
+                        <input
+                            type="range"
+                            id="sl-larm2"
+                            min="-3.14159"
+                            max="3.14159"
+                            step="0.001"
+                            value="-0.5236"
+                        />
+                        <span class="angle-val" id="v-larm2">-π/6</span>
+                    </div>
+                    <div class="angle-row">
+                        <label
+                            title="anglerightleg"
+                            data-part="rleg"
+                            style="color: #984ea3"
+                            >anglerightleg</label
+                        >
+                        <input
+                            type="range"
+                            id="sl-rleg"
+                            min="-3.14159"
+                            max="9.42478"
+                            step="0.001"
+                            value="4.4506"
+                        />
+                        <span class="angle-val" id="v-rleg">...</span>
+                    </div>
+                    <div class="angle-row">
+                        <label
+                            title="angleleftleg"
+                            data-part="lleg"
+                            style="color: #a65628"
+                            >angleleftleg</label
+                        >
+                        <input
+                            type="range"
+                            id="sl-lleg"
+                            min="-3.14159"
+                            max="9.42478"
+                            step="0.001"
+                            value="4.9742"
+                        />
+                        <span class="angle-val" id="v-lleg">...</span>
+                    </div>
+                </div>
+
+                <div id="output-section">
+                    <h2>R code — copy into xkcdman()</h2>
+                    <pre id="code-output"></pre>
+                    <button id="copy-btn">Copy to clipboard</button>
+                </div>
+            </div>
+
+            <div id="canvas-wrap">
+                <div id="canvas-hint">
+                    <span>Drag any segment end-point to rotate</span>
+                    <span id="hover-info">hover over figure</span>
+                </div>
+                <canvas id="c"></canvas>
+            </div>
+        </div>
+        <!-- #main -->
+
+        <div id="footer">
+            This work is licensed under a
+            <a href="https://creativecommons.org/licenses/by-nc/2.5/"
+                >Creative Commons Attribution-NonCommercial 2.5 License</a
+            >
+            &nbsp;·&nbsp;
+            <a href="https://xkcd.com/">xkcd.com</a>
+            &nbsp;·&nbsp; Pose helper for the
+            <a href="https://cran.r-project.org/package=xkcd">xkcd R package</a>
+        </div>
+
+        <script>
+            /* ── State ──────────────────────────────────────────────────────────── */
+            const PI = Math.PI;
+
+            const state = {
+                x: 0.5,
+                y: 0.72, // figure position in [0,1]^2 data coords
+                scale: 0.12,
+                ratioxy: 1.0,
+                neck: -PI / 2,
+                spine: -PI / 2,
+                rarm1: -PI / 6,
+                rarm2: PI / 6,
+                larm1: -PI / 2 - PI / 6,
+                larm2: -PI / 6,
+                rleg: (3 * PI) / 2 - PI / 12,
+                lleg: (3 * PI) / 2 + PI / 12,
+            };
+
+            const PRESETS = {
+                standing: {
+                    neck: -PI / 2,
+                    spine: -PI / 2,
+                    rarm1: -PI / 6,
+                    rarm2: PI / 6,
+                    larm1: -PI / 2 - PI / 6,
+                    larm2: -PI / 6,
+                    rleg: (3 * PI) / 2 - PI / 12,
+                    lleg: (3 * PI) / 2 + PI / 12,
+                },
+                armsup: {
+                    neck: -PI / 2,
+                    spine: -PI / 2,
+                    rarm1: PI / 3,
+                    rarm2: PI / 2,
+                    larm1: PI - PI / 3,
+                    larm2: PI / 2,
+                    rleg: (3 * PI) / 2 - PI / 12,
+                    lleg: (3 * PI) / 2 + PI / 12,
+                },
+                walking: {
+                    neck: -PI / 2 + PI / 10,
+                    spine: -PI / 2 + PI / 10,
+                    rarm1: PI / 2 + PI / 6,
+                    rarm2: PI / 2,
+                    larm1: -PI / 6,
+                    larm2: 0,
+                    rleg: (3 * PI) / 2 - PI / 5,
+                    lleg: (3 * PI) / 2 + PI / 4,
+                },
+                pointing: {
+                    neck: -PI / 2,
+                    spine: -PI / 2,
+                    rarm1: 0,
+                    rarm2: 0,
+                    larm1: -PI / 2 - PI / 6,
+                    larm2: -PI / 6,
+                    rleg: (3 * PI) / 2 - PI / 12,
+                    lleg: (3 * PI) / 2 + PI / 12,
+                },
+                falling: {
+                    neck: -PI / 2 - PI / 4,
+                    spine: -PI / 2 - PI / 4,
+                    rarm1: PI / 4,
+                    rarm2: PI / 2,
+                    larm1: PI - PI / 8,
+                    larm2: PI / 2 + PI / 4,
+                    rleg: (3 * PI) / 2 + PI / 6,
+                    lleg: (3 * PI) / 2 - PI / 3,
+                },
+            };
+
+            const COLOURS = {
+                neck: "#e41a1c",
+                head: "#e41a1c",
+                spine: "#377eb8",
+                rarm1: "#ff7f00",
+                rarm2: "#ff7f00",
+                larm1: "#4daf4a",
+                larm2: "#4daf4a",
+                rleg: "#984ea3",
+                lleg: "#a65628",
+            };
+
+            /* ── Canvas setup ───────────────────────────────────────────────────── */
+            const canvas = document.getElementById("c");
+            const ctx = canvas.getContext("2d");
+
+            function resize() {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height =
+                    canvas.parentElement.clientHeight -
+                    canvas.previousElementSibling.offsetHeight;
+                draw();
+            }
+            window.addEventListener("resize", resize);
+
+            /* ── Geometry helpers ───────────────────────────────────────────────── */
+            // Canvas coords: top-left origin, y down.
+            // We map data [0,1]^2 → canvas with padding, y flipped.
+            function toCanvas(dx, dy) {
+                const pad = 60;
+                const W = canvas.width - 2 * pad,
+                    H = canvas.height - 2 * pad;
+                return [pad + dx * W, pad + (1 - dy) * H];
+            }
+            function fromCanvas(cx, cy) {
+                const pad = 60;
+                const W = canvas.width - 2 * pad,
+                    H = canvas.height - 2 * pad;
+                return [(cx - pad) / W, 1 - (cy - pad) / H];
+            }
+
+            function computeFigure() {
+                const { x, y, scale: sc, ratioxy: rx } = state;
+                // scale = head diameter in data units (matches R xkcdman exactly)
+                const dh = sc;
+                const ls = dh; // spine length = head diameter
+                const ll = ls * 1.2; // leg
+                const lh = ls * 0.6; // humerus
+                const lr = ls * 0.5; // radius (forearm)
+
+                // shoulder = head_center + neck offset
+                const sx = x + (dh / 2) * Math.cos(state.neck) * rx;
+                const sy = y + (dh / 2) * Math.sin(state.neck);
+
+                // hip
+                const hx = sx + ls * Math.cos(state.spine) * rx;
+                const hy = sy + ls * Math.sin(state.spine);
+
+                // arm elbow points
+                const rEx = sx + lh * Math.cos(state.rarm1) * rx;
+                const rEy = sy + lh * Math.sin(state.rarm1);
+                const lEx = sx + lh * Math.cos(state.larm1) * rx;
+                const lEy = sy + lh * Math.sin(state.larm1);
+
+                return {
+                    headCenter: [x, y],
+                    headR: dh / 2,
+                    shoulder: [sx, sy],
+                    hip: [hx, hy],
+                    rElbow: [rEx, rEy],
+                    rHand: [
+                        rEx + lr * Math.cos(state.rarm2) * rx,
+                        rEy + lr * Math.sin(state.rarm2),
+                    ],
+                    lElbow: [lEx, lEy],
+                    lHand: [
+                        lEx + lr * Math.cos(state.larm2) * rx,
+                        lEy + lr * Math.sin(state.larm2),
+                    ],
+                    rFoot: [
+                        hx + ll * Math.cos(state.rleg) * rx,
+                        hy + ll * Math.sin(state.rleg),
+                    ],
+                    lFoot: [
+                        hx + ll * Math.cos(state.lleg) * rx,
+                        hy + ll * Math.sin(state.lleg),
+                    ],
+                    dh,
+                    ls,
+                    ll,
+                    lh,
+                    lr,
+                };
+            }
+
+            /* ── Drawing ─────────────────────────────────────────────────────────── */
+            function wobblyLine(x1, y1, x2, y2, color, lw = 2.5) {
+                // Slight hand-drawn wobble
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = lw;
+                ctx.lineCap = "round";
+                const n = 6;
+                const dx = (x2 - x1) / n,
+                    dy = (y2 - y1) / n;
+                ctx.moveTo(x1, y1);
+                for (let i = 1; i < n; i++) {
+                    const jx = sRand() * 2.5;
+                    const jy = sRand() * 2.5;
+                    ctx.lineTo(x1 + dx * i + jx, y1 + dy * i + jy);
+                }
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+
+            function wobblyCircle(cx, cy, r, color, lw = 2.5) {
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = lw;
+                const steps = 40;
+                for (let i = 0; i <= steps; i++) {
+                    const t = (i / steps) * 2 * PI;
+                    const jitter = sRand() * 1.5;
+                    const rx2 = r + jitter;
+                    const ry2 = r + jitter;
+                    const px = cx + rx2 * Math.cos(t);
+                    const py = cy + ry2 * Math.sin(t);
+                    if (i === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+            let seed = 42;
+            function seededRand() {
+                seed = (seed * 9301 + 49297) % 233280;
+                return seed / 233280;
+            }
+            function sRand() {
+                return seededRand() - 0.5;
+            }
+
+            function drawFigure() {
+                const f = computeFigure();
+                const C = (d) => toCanvas(...d);
+
+                const bones = [
+                    { from: f.shoulder, to: f.hip, key: "spine" },
+                    { from: f.shoulder, to: f.rElbow, key: "rarm1" },
+                    { from: f.rElbow, to: f.rHand, key: "rarm2" },
+                    { from: f.shoulder, to: f.lElbow, key: "larm1" },
+                    { from: f.lElbow, to: f.lHand, key: "larm2" },
+                    { from: f.hip, to: f.rFoot, key: "rleg" },
+                    { from: f.hip, to: f.lFoot, key: "lleg" },
+                ];
+
+                // draw bones
+                for (const b of bones) {
+                    const [x1, y1] = C(b.from),
+                        [x2, y2] = C(b.to);
+                    const lw =
+                        b.key === hoveredPart || b.key === dragTarget
+                            ? 4.5
+                            : 2.5;
+                    wobblyLine(x1, y1, x2, y2, COLOURS[b.key], lw);
+
+                    // draw draggable end dot
+                    const isActive =
+                        b.key === hoveredPart || b.key === dragTarget;
+                    ctx.beginPath();
+                    ctx.arc(x2, y2, isActive ? 6 : 4, 0, 2 * PI);
+                    ctx.fillStyle = isActive ? COLOURS[b.key] : "#fff";
+                    ctx.strokeStyle = COLOURS[b.key];
+                    ctx.lineWidth = 2;
+                    ctx.fill();
+                    ctx.stroke();
+                }
+
+                // head circle
+                const [hcx, hcy] = C(f.headCenter);
+                const pad = 60;
+                const H = canvas.height - 2 * pad;
+                const hcr = f.headR * H; // pixel radius: data-unit radius × pixels-per-data-unit
+                const isHeadActive = hoveredPart === "head";
+                wobblyCircle(
+                    hcx,
+                    hcy,
+                    hcr,
+                    COLOURS.head,
+                    isHeadActive ? 4 : 2.5,
+                );
+
+                // neck label dot
+                const [sx, sy2] = C(f.shoulder);
+                ctx.beginPath();
+                ctx.arc(sx, sy2, 3, 0, 2 * PI);
+                ctx.fillStyle = COLOURS.neck;
+                ctx.fill();
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // light grid
+                ctx.strokeStyle = "#eee";
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= 10; i++) {
+                    const [x1] = toCanvas(i / 10, 0),
+                        [, y1] = toCanvas(0, i / 10);
+                    const [x2] = toCanvas(i / 10, 1),
+                        [, y2] = toCanvas(1, i / 10);
+                    ctx.beginPath();
+                    ctx.moveTo(x1, toCanvas(0, 0)[1]);
+                    ctx.lineTo(x1, toCanvas(0, 1)[1]);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(toCanvas(0, 0)[0], y1);
+                    ctx.lineTo(toCanvas(1, 0)[0], y1);
+                    ctx.stroke();
+                }
+
+                seed = 42;
+                drawFigure();
+                updateCode();
+            }
+
+            /* ── Hit testing ─────────────────────────────────────────────────────── */
+            function hitTargets() {
+                const f = computeFigure();
+                return [
+                    // key, point that gets dragged (endpoint), angle-key in state, pivot, segment length
+                    {
+                        key: "spine",
+                        pt: f.hip,
+                        angle: "spine",
+                        pivot: f.shoulder,
+                        len: f.ls,
+                    },
+                    {
+                        key: "rarm1",
+                        pt: f.rElbow,
+                        angle: "rarm1",
+                        pivot: f.shoulder,
+                        len: f.lh,
+                    },
+                    {
+                        key: "rarm2",
+                        pt: f.rHand,
+                        angle: "rarm2",
+                        pivot: f.rElbow,
+                        len: f.lr,
+                    },
+                    {
+                        key: "larm1",
+                        pt: f.lElbow,
+                        angle: "larm1",
+                        pivot: f.shoulder,
+                        len: f.lh,
+                    },
+                    {
+                        key: "larm2",
+                        pt: f.lHand,
+                        angle: "larm2",
+                        pivot: f.lElbow,
+                        len: f.lr,
+                    },
+                    {
+                        key: "rleg",
+                        pt: f.rFoot,
+                        angle: "rleg",
+                        pivot: f.hip,
+                        len: f.ll,
+                    },
+                    {
+                        key: "lleg",
+                        pt: f.lFoot,
+                        angle: "lleg",
+                        pivot: f.hip,
+                        len: f.ll,
+                    },
+                    {
+                        key: "head",
+                        pt: f.headCenter,
+                        angle: null,
+                        pivot: null,
+                        len: f.dh / 2,
+                    },
+                ];
+            }
+
+            function findHit(cx, cy, radius = 12) {
+                const targets = hitTargets();
+                for (const t of targets) {
+                    const [tx, ty] = toCanvas(...t.pt);
+                    const dist = Math.hypot(cx - tx, cy - ty);
+                    if (dist < radius) return t;
+                }
+                // also check along segment bodies for easier grab
+                return null;
+            }
+
+            /* ── Drag handling ───────────────────────────────────────────────────── */
+            let dragTarget = null;
+            let hoveredPart = null;
+
+            canvas.addEventListener("mousemove", (e) => {
+                const r = canvas.getBoundingClientRect();
+                const cx = e.clientX - r.left,
+                    cy = e.clientY - r.top;
+
+                if (dragTarget) {
+                    handleDrag(cx, cy);
+                } else {
+                    const hit = findHit(cx, cy);
+                    hoveredPart = hit ? hit.key : null;
+                    canvas.style.cursor = hit ? "grab" : "crosshair";
+                    document.getElementById("hover-info").textContent = hit
+                        ? hit.key
+                        : "hover over figure";
+                    draw();
+                }
+            });
+
+            canvas.addEventListener("mousedown", (e) => {
+                const r = canvas.getBoundingClientRect();
+                const cx = e.clientX - r.left,
+                    cy = e.clientY - r.top;
+                const hit = findHit(cx, cy);
+                if (hit) {
+                    dragTarget = hit;
+                    canvas.style.cursor = "grabbing";
+                }
+            });
+
+            canvas.addEventListener("mouseup", () => {
+                dragTarget = null;
+                canvas.style.cursor = "crosshair";
+            });
+            canvas.addEventListener("mouseleave", () => {
+                dragTarget = null;
+            });
+
+            function handleDrag(cx, cy) {
+                const [dx, dy] = fromCanvas(cx, cy);
+
+                if (dragTarget.key === "head") {
+                    // move the whole figure
+                    state.x = Math.max(0.05, Math.min(0.95, dx));
+                    state.y = Math.max(0.05, Math.min(0.95, dy));
+                } else {
+                    // compute new angle from pivot to mouse
+                    const [px, py] = dragTarget.pivot;
+                    const rx = state.ratioxy;
+                    // atan2 but un-apply ratioxy stretch on x
+                    const ang = Math.atan2(dy - py, (dx - px) / rx);
+                    state[dragTarget.angle] = ang;
+                    syncSlider(dragTarget.angle, ang);
+                }
+                draw();
+            }
+
+            /* ── Sliders ─────────────────────────────────────────────────────────── */
+            const sliderMap = {
+                "sl-neck": "neck",
+                "sl-spine": "spine",
+                "sl-rarm1": "rarm1",
+                "sl-rarm2": "rarm2",
+                "sl-larm1": "larm1",
+                "sl-larm2": "larm2",
+                "sl-rleg": "rleg",
+                "sl-lleg": "lleg",
+                "sl-scale": "scale",
+                "sl-ratioxy": "ratioxy",
+            };
+
+            Object.entries(sliderMap).forEach(([id, key]) => {
+                const el = document.getElementById(id);
+                el.addEventListener("input", () => {
+                    state[key] = parseFloat(el.value);
+                    updateValueLabel(key, state[key]);
+                    draw();
+                });
+            });
+
+            function syncSlider(key, val) {
+                const id = Object.keys(sliderMap).find(
+                    (k) => sliderMap[k] === key,
+                );
+                if (id) {
+                    const el = document.getElementById(id);
+                    el.value = val;
+                    updateValueLabel(key, val);
+                }
+            }
+
+            function fmtAngle(v) {
+                // Express as fraction of PI
+                const frac = v / PI;
+                if (Math.abs(frac) < 0.001) return "0";
+                // common fractions
+                const denoms = [1, 2, 3, 4, 6, 8, 12];
+                for (const d of denoms) {
+                    const n = Math.round(frac * d);
+                    if (Math.abs(n / d - frac) < 0.005 && n !== 0) {
+                        const sign = n < 0 ? "-" : "";
+                        const absN = Math.abs(n);
+                        if (d === 1) return `${sign}${absN}π`;
+                        if (absN === 1) return `${sign}π/${d}`;
+                        return `${sign}${absN}π/${d}`;
+                    }
+                }
+                return v.toFixed(3);
+            }
+
+            function updateValueLabel(key, val) {
+                const labelMap = {
+                    neck: "v-neck",
+                    spine: "v-spine",
+                    rarm1: "v-rarm1",
+                    rarm2: "v-rarm2",
+                    larm1: "v-larm1",
+                    larm2: "v-larm2",
+                    rleg: "v-rleg",
+                    lleg: "v-lleg",
+                    scale: "v-scale",
+                    ratioxy: "v-ratioxy",
+                };
+                const el = document.getElementById(labelMap[key]);
+                if (!el) return;
+                if (key === "scale" || key === "ratioxy") {
+                    el.textContent = val.toFixed(2);
+                } else {
+                    el.textContent = fmtAngle(val);
+                }
+            }
+
+            /* ── Code output ─────────────────────────────────────────────────────── */
+            function updateCode() {
+                const s = state;
+                const lines = [
+                    `xkcdman(`,
+                    `  mapping = aes(x      = ${s.x.toFixed(2)},`,
+                    `                y      = ${s.y.toFixed(2)}),`,
+                    `  data    = data.frame(x = ${s.x.toFixed(2)}, y = ${s.y.toFixed(2)}),`,
+                    `  scale             = ${s.scale.toFixed(3)},`,
+                    `  ratioxy           = ${s.ratioxy.toFixed(2)},`,
+                    `  angleofneck       = ${fmtR(s.neck)},`,
+                    `  angleofspine      = ${fmtR(s.spine)},`,
+                    `  anglerighthumerus = ${fmtR(s.rarm1)},`,
+                    `  anglerightradius  = ${fmtR(s.rarm2)},`,
+                    `  anglelefthumerus  = ${fmtR(s.larm1)},`,
+                    `  angleleftradius   = ${fmtR(s.larm2)},`,
+                    `  anglerightleg     = ${fmtR(s.rleg)},`,
+                    `  angleleftleg      = ${fmtR(s.lleg)}`,
+                    `)`,
+                ];
+                document.getElementById("code-output").textContent =
+                    lines.join("\n");
+            }
+
+            function fmtR(v) {
+                // Output clean R expression
+                const frac = v / PI;
+                if (Math.abs(frac) < 0.001) return "0";
+                const denoms = [1, 2, 3, 4, 6, 8, 12];
+                for (const d of denoms) {
+                    const n = Math.round(frac * d);
+                    if (Math.abs(n / d - frac) < 0.005 && n !== 0) {
+                        if (d === 1)
+                            return `${n > 0 ? "" : "-"}pi${Math.abs(n) > 1 ? " * " + Math.abs(n) : ""}`;
+                        const sign = n < 0 ? "-" : "";
+                        const absN = Math.abs(n);
+                        if (absN === 1) return `${sign}pi / ${d}`;
+                        return `${sign}${absN} * pi / ${d}`;
+                    }
+                }
+                return v.toFixed(4);
+            }
+
+            /* ── Copy button ─────────────────────────────────────────────────────── */
+            document
+                .getElementById("copy-btn")
+                .addEventListener("click", () => {
+                    const text =
+                        document.getElementById("code-output").textContent;
+                    navigator.clipboard.writeText(text).then(() => {
+                        const btn = document.getElementById("copy-btn");
+                        btn.textContent = "Copied!";
+                        btn.classList.add("copied");
+                        setTimeout(() => {
+                            btn.textContent = "Copy to clipboard";
+                            btn.classList.remove("copied");
+                        }, 1500);
+                    });
+                });
+
+            /* ── Reset button ────────────────────────────────────────────────────── */
+            document
+                .getElementById("reset-btn")
+                .addEventListener("click", () => {
+                    const preset = PRESETS.standing;
+                    Object.assign(state, preset);
+                    state.x = 0.5;
+                    state.y = 0.72;
+                    state.scale = 0.12;
+                    state.ratioxy = 1.0;
+                    Object.keys(preset).forEach((k) =>
+                        syncSlider(k, preset[k]),
+                    );
+                    syncSlider("scale", state.scale);
+                    syncSlider("ratioxy", state.ratioxy);
+                    document.getElementById("pose-select").value = "standing";
+                    draw();
+                });
+
+            /* ── Preset select ───────────────────────────────────────────────────── */
+            document
+                .getElementById("pose-select")
+                .addEventListener("change", (e) => {
+                    const preset = PRESETS[e.target.value];
+                    if (!preset) return;
+                    Object.assign(state, preset);
+                    Object.keys(preset).forEach((k) =>
+                        syncSlider(k, preset[k]),
+                    );
+                    draw();
+                });
+
+            /* ── Init ────────────────────────────────────────────────────────────── */
+            // set initial labels
+            [
+                "neck",
+                "spine",
+                "rarm1",
+                "rarm2",
+                "larm1",
+                "larm2",
+                "rleg",
+                "lleg",
+            ].forEach((k) => updateValueLabel(k, state[k]));
+            updateValueLabel("scale", state.scale);
+            updateValueLabel("ratioxy", state.ratioxy);
+            resize();
+        </script>
+    </body>
+</html>
