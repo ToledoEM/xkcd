@@ -1,23 +1,79 @@
 name: pkgdown
 
-# Every published Release (or a manual run) builds the pkgdown site and
-# publishes it to the root of the gh-pages branch
-# (https://toledoem.github.io/xkcd/).
+# Lint and spelling run on every PR, release and manual run (advisory).
+# The site builds and publishes to the root of the gh-pages branch
+# (https://toledoem.github.io/xkcd/) on every published Release or manual run.
 on:
+  pull_request:
   release:
     types: [published]
   workflow_dispatch:
 
 concurrency:
-  group: pkgdown-pages
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: false
 
 # Jobs grant their own permissions; nothing by default.
 permissions: {}
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          extra-packages: any::lintr, local::.
+          needs: lint
+
+      # Advisory: lints are reported in the log but do not fail the build.
+      - name: Lint
+        run: lintr::lint_package()
+        shell: Rscript {0}
+        env:
+          LINTR_ERROR_ON_LINT: false
+          R_LINTR_LINTER_FILE: .github/.lintr
+
+  spelling:
+    name: Spell check
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          extra-packages: any::spelling
+          needs: spelling
+
+      # Advisory: misspellings are reported in the log but do not fail the build.
+      # Add accepted words to inst/WORDLIST.
+      - name: Spell check
+        run: |
+          res <- spelling::spell_check_package()
+          print(res)
+        shell: Rscript {0}
+
   build:
     name: Build site
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -65,6 +121,7 @@ jobs:
 
   deploy:
     name: Publish to gh-pages
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-24.04
     permissions:
