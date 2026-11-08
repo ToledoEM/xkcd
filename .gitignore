@@ -23,5 +23,6 @@
 docs/*
 inst/*
 !inst/_pkgdown.yml
+!inst/WORDLIST
 vignettes/*.html
 build-site.sh
